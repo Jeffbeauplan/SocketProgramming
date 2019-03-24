@@ -1,6 +1,7 @@
 *.csv
 *.pyc
+*.profraw
 /.vscode
 /.DS_Store
-.DS_Store
-.vscode
+*.DS_Store
+*.vscode
