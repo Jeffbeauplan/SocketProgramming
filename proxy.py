@@ -15,6 +15,7 @@ from __future__ import division
 from __future__ import print_function
 
 import library
+import datetime
 
 # Where to find the server. This assumes it's running on the smae machine
 # as the proxy, but on a different port.
@@ -54,11 +55,12 @@ def CheckCachedResponse(command_line, cache):
   # Update the cache for PUT commands but also pass the traffic to the server.
   if cmd == 'PUT':
     cache.StoreValue(name, text)
+    cache.StoreValue(name + "TIME", datetime.datetime.now())
     return ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
 
   # GET commands can be cached.
   if cmd == 'GET':
-    if name in cache.Keys():
+    if name in cache.Keys() and (datetime.datetime.now() - cache.GetValue(name+"TIME")).total_seconds() < MAX_CACHE_AGE_SEC:
       return cache.GetValue(name) + '\n'
     else:
       res = ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
