@@ -96,9 +96,14 @@ def DumpCommand(database):
   if len(keys) == 0:
     return "No keys in database"
   
+  #Write to output buffer
   output = io.BytesIO()
-  out = csv.writer(output)
-  out.writerow(keys)
+  writer = csv.writer(output)
+  writer.writerow(keys)
+
+  #Write to CSV file
+  csvFile = csv.writer(open("keys.csv", "w"), quoting=csv.QUOTE_ALL)
+  csvFile.writerow(keys)
 
   return output.getvalue()
 
