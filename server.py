@@ -36,7 +36,8 @@ from __future__ import print_function
 # A few commands are used by both the server and the proxy server. Those
 # functions are in library.py.
 import library
-
+import csv
+import io
 
 # The port that we accept connections on. (A.k.a. "listen" on.)
 LISTENING_PORT = 7777
@@ -58,7 +59,7 @@ def PutCommand(name, text, database):
   """
   # Store the value in the database.
   database.StoreValue(name,text)
-  return ""
+  return name + ": " + text 
 
 
 def GetCommand(name, database):
@@ -73,9 +74,11 @@ def GetCommand(name, database):
     A human readable string describing the result. If there is an error,
     then the string describes the error.
   """
-  ##########################################
-  #TODO: Implement GET function
-  ##########################################
+  data = database.GetValue(name)
+  if data:
+    return data
+  else:
+    return "Key not found"
 
 
 def DumpCommand(database):
@@ -89,12 +92,15 @@ def DumpCommand(database):
     A human readable string describing the result. If there is an error,
     then the string describes the error.
   """
-
-  ##########################################
-  #TODO: Implement DUMP function
-  ##########################################
+  keys = database.Keys()
+  if len(keys) == 0:
+    return "No keys in database"
   
- 
+  output = io.BytesIO()
+  out = csv.writer(output)
+  out.writerow(keys)
+
+  return output.getvalue()
 
 
 def SendText(sock, text):
@@ -129,12 +135,13 @@ def main():
       result = DumpCommand(database)
     else:
       SendText(client_sock, 'Unknown command %s' % command)
-
+    
+    print(result)
     SendText(client_sock, result)
 
     # We're done with the client, so clean up the socket.
     client_sock.close()
-    
+  
 
 
 main()

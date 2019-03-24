@@ -36,18 +36,16 @@ def CreateServerSocket(port):
     An socket that implements TCP/IP.
   """
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-  hostname = socket.gethostname()
-  dns_resolved_addr = socket.gethostbyname(hostname)
-  s.bind((dns_resolved_addr, port))
+  hostname = socket.gethostbyname('localhost')
+  print(hostname)
+  s.bind((hostname, port))
   return s
     
-
 def ConnectClientToServer(server_sock):
     # Wait until a client connects and then get a socket that connects to the
     # client.
     server_sock.listen(5)
     conn, addr = server_sock.accept()
-    #client_socket = CreateClientSocket(addr[0], addr[1])
     return (conn, addr)
     
 
@@ -121,8 +119,8 @@ class KeyValueStore(object):
       None or the value.
     """
     # Check if we've ever put something in the cache.
-    if key in keyDict:
-      return keyDict[key]
+    if key in self.keyDict:
+      return self.keyDict[key]
     else:
       return None
 
@@ -141,7 +139,6 @@ class KeyValueStore(object):
 
   def Keys(self):
     """Returns a list of all keys in the datastore."""
-
     return list(self.keyDict.keys())
     
 
