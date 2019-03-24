@@ -57,12 +57,13 @@ def CheckCachedResponse(command_line, cache):
     return ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
 
   # GET commands can be cached.
-  if cmd == 'GET' and name in cache.Keys():
-    return cache.GetValue(name) + '\n'
-  else:
-    res = ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
-    cache.StoreValue(name, res)
-    return res
+  if cmd == 'GET':
+    if name in cache.Keys():
+      return cache.GetValue(name) + '\n'
+    else:
+      res = ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
+      cache.StoreValue(name, res)
+      return res
   
   return ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
 
