@@ -54,17 +54,17 @@ def CheckCachedResponse(command_line, cache):
   # Update the cache for PUT commands but also pass the traffic to the server.
   if cmd == 'PUT':
     cache.StoreValue(name, text)
-    return ForwardCommandToServer(cmd, SERVER_ADDRESS, SERVER_PORT)
+    return ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
 
   # GET commands can be cached.
-  if cmd == 'GET' and name in cache:
-    return cache.GetValue(name)
+  if cmd == 'GET' and name in cache.Keys():
+    return cache.GetValue(name) + '\n'
   else:
-    res = ForwardCommandToServer(cmd, SERVER_ADDRESS, SERVER_PORT)
+    res = ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
     cache.StoreValue(name, res)
     return res
   
-  return ForwardCommandToServer(cmd, SERVER_ADDRESS, SERVER_PORT)
+  return ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
 
 
 
