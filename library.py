@@ -135,8 +135,6 @@ class KeyValueStore(object):
     """
     self.keyDict[key] = value
 
-    
-
   def Keys(self):
     """Returns a list of all keys in the datastore."""
     return list(self.keyDict.keys())

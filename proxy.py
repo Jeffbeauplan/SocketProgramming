@@ -60,7 +60,7 @@ def CheckCachedResponse(command_line, cache):
 
   # GET commands can be cached.
   if cmd == 'GET':
-    if name in cache.Keys() and (datetime.datetime.now() - cache.GetValue(name+"TIME")).total_seconds() < MAX_CACHE_AGE_SEC:
+    if name in cache.Keys() and DataNotStale(name, cache):
       return cache.GetValue(name) + '\n'
     else:
       res = ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
@@ -69,7 +69,8 @@ def CheckCachedResponse(command_line, cache):
   
   return ForwardCommandToServer(command_line, SERVER_ADDRESS, SERVER_PORT)
 
-
+def DataNotStale(name, cache):
+  return (datetime.datetime.now() - cache.GetValue(name+"TIME")).total_seconds() < MAX_CACHE_AGE_SEC
 
 def ProxyClientCommand(sock, server_addr, server_port, cache):
   """Receives a command from a client and forwards it to a server:port.
@@ -88,6 +89,7 @@ def ProxyClientCommand(sock, server_addr, server_port, cache):
   """
   # Read a command.
   command_line = library.ReadCommand(sock)
+  
   response = CheckCachedResponse(command_line, cache)
   sock.sendall(response)
 

@@ -146,7 +146,6 @@ def main():
 
     # We're done with the client, so clean up the socket.
     client_sock.close()
-  
 
 
 main()
